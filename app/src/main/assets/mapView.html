@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en">
+
+<head>
+    <script src="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1" charset="utf-8">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+
+    <script language="JavaScript" type="text/javascript" src="/js/jquery-1.2.6.min.js"></script>
+    <script language="JavaScript" type="text/javascript" src="/js/jquery-ui-personalized-1.5.2.packed.js"></script>
+    <script language="JavaScript" type="text/javascript" src="/js/sprinkle.js"></script>
+
+</head>
+
+
+<body>
+<div class="col-md-12 col-sm-12 col-xs-12">
+    <div class="single-input-field">
+        <select name="district" class="single-input-field"  id="dist"  required  placeholder="location" onClick="districtHandler(document.getElementById('dist').value)">
+            <option value="0" disabled selected hidden>Select District</option>
+            <option value="1">Kasargod</option>
+            <option value="2">Kannur</option>
+            <option value="3">Wayanad</option>
+            <option value="4">Kozhikode</option>
+            <option value="5">Malappuram</option>
+            <option value="6">Palakkad</option>
+            <option value="7">Thrissur</option>
+            <option value="8">Ernakulam</option>
+            <option value="9">Idukki</option>
+            <option value="10">Kottayam</option>
+            <option value="11">Alappuzha</option>
+            <option value="12">Pathanamthitta</option>
+            <option value="13">kollam</option>
+            <option value="14">trivandram</option>
+        </select>
+    </div>
+</div>
+
+
+<div class="col-md-4 col-sm-12 ">
+    <div class="single-input-field">
+        <input  id="lat" placeholder="Lattitude" type="text"  name="lat" >
+    </div>
+</div>
+
+<div class="col-md-4 col-sm-6 ">
+    <div class="single-input-field">
+        <input id="lng"  placeholder="Longitude" type="text"  name="lng">
+    </div>
+</div>
+<div class="col-md-12 col-sm-12 ">
+    <div id="mapid" style=" width: 100%;height: 650px;"></div>
+</div>
+
+
+<script>
+
+	var tileLayer = new L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+		attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> Contributors'
+	});
+
+	var rememberLat = document.getElementById('lat').value;
+	var rememberLong = document.getElementById('lng').value;
+
+	if( !rememberLat || !rememberLong ) {
+		rememberLat = 10.525491; rememberLong = 76.214369;
+	}
+
+	var map = new L.Map('mapid', {
+		'center': [rememberLat, rememberLong],
+		'zoom': 12,
+		'layers': [tileLayer]
+	});
+
+	var marker = L.marker([rememberLat, rememberLong],{
+		draggable: true
+	}).addTo(map);
+
+	marker.on('dragend', function (e) {
+		updateLatLng(marker.getLatLng().lat, marker.getLatLng().lng);
+	});
+
+	map.on('click', function (e) {
+		marker.setLatLng(e.latlng);
+		updateLatLng(marker.getLatLng().lat, marker.getLatLng().lng);
+	});
+
+	function districtHandler(num){
+		var gps= ["12.510224,74.985168","12.510224,74.985168", "11.874477,75.370369", "11.685358, 76.131996", "11.258753,75.780411", "11.050976,76.071098", "10.786730,76.654793", "10.527642,76.214432", "9.981636,76.299881", "9.918897,77.102493", "9.591567,76.522156","9.481441, 76.340822", "9.273028,76.794770", "8.884326,76.591137", "8.484009,76.933409"];
+		var lat_long = gps[num].split(",");
+		var lat = lat_long[0];
+		var lng = lat_long[1];
+		document.getElementById('lat').value = marker.getLatLng().lat;
+		document.getElementById('lng').value = marker.getLatLng().lng;
+		marker.setLatLng([lat,lng]);
+		map.panTo([lat,lng]);
+	}
+
+	function updateLatLng(lat,lng,reverse) {
+		if(reverse) {
+			marker.setLatLng([lat,lng]);
+			map.panTo([lat,lng]);
+		}
+		else
+		{
+			document.getElementById('lat').value = marker.getLatLng().lat;
+			document.getElementById('lng').value = marker.getLatLng().lng;
+			map.panTo([lat,lng]);
+		}
+	}
+
+</script>
+</body>
+
+</html>
